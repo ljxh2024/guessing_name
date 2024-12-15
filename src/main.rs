@@ -1,5 +1,3 @@
-// https://kaisery.github.io/trpl-zh-cn/ch02-00-guessing-game-tutorial.html
-
 use rand::Rng;
 use std::{cmp::Ordering, io, error::Error};
 
@@ -11,17 +9,18 @@ fn main() {
         println!("Please input your guess.");
 
         let guess = match check_input() {
-            Ok(n) => n,
+            Ok(n) => {
+                if !(1..=100).contains(&n) {
+                    println!("The secret number will be between 1 and 100.");
+                    continue;
+                }
+                n
+            },
             Err(e) => {
                 println!("{e}");
                 continue;
             }
         };
-
-        if !(1..=100).contains(&guess) {
-            println!("The secret number will be between 1 and 100.");
-            continue;
-        }
 
         println!("You guessed: {guess}");
 
