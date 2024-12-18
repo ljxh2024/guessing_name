@@ -1,5 +1,5 @@
 use rand::Rng;
-use std::{cmp::Ordering, io, error::Error};
+use std::{cmp::Ordering, io};
 
 fn main() {
     println!("--- Guess the number ---");
@@ -8,19 +8,18 @@ fn main() {
     loop {
         println!("Please input your guess.");
 
-        let guess = match check_input() {
-            Ok(n) => {
-                if !(1..=100).contains(&n) {
-                    println!("The secret number will be between 1 and 100.");
-                    continue;
-                }
-                n
-            },
-            Err(e) => {
-                println!("{e}");
-                continue;
-            }
+        let mut guess = String::new();
+        io::stdin().read_line(&mut guess).expect("Failed to read line");
+
+        let Ok(guess) = guess.trim().parse::<i32>() else {
+            println!("Failed to parse number");
+            continue;
         };
+
+        if !(1..=100).contains(&guess) {
+            println!("The secret number will be between 1 and 100.");
+            continue;
+        }
 
         println!("You guessed: {guess}");
 
@@ -33,11 +32,4 @@ fn main() {
             }
         }
     }
-}
-
-fn check_input() -> Result<i32, Box<dyn Error>> {
-    let mut guess = String::new();
-    io::stdin().read_line(&mut guess)?;
-    let guess = guess.trim().parse::<i32>()?;
-    Ok(guess)
 }
